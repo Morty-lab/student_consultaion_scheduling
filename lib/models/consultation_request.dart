@@ -26,7 +26,7 @@ class ConsultationRequest with DisplayMixin {
   final BuildContext? context;
   final String? id;
   final String? studentID;
-  final String? facultyID;
+  String? facultyID;
   final String? requestTitle;
   final String? requestDescription;
   final Timestamp? proposedTimeStart;
@@ -92,9 +92,10 @@ class ConsultationRequest with DisplayMixin {
     return result[0];
   }
 
-  Future<List<ConsultationRequest>> getConsultationRequestsByStatus() async {
+  Future<List<ConsultationRequest>> getConsultationRequestsByStatus(
+      String status) async {
     QuerySnapshot querySnapshot = await consultationRequests
-        .where('status', isEqualTo: 'Pending')
+        .where('status', isEqualTo: status)
         .where('facultyID', isEqualTo: _firebase.currentUser?.uid)
         .get();
     final allConsultationRequests = querySnapshot.docs
