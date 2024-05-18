@@ -106,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       builder: (ctx) => AlertDialog(
                             title: Text("Account Not Found"),
                             content: Text(
-                                "Please check your credentials or try registering to the system}"),
+                                "Please check your credentials or try registering to the system"),
                             actions: [
                               TextButton(
                                   onPressed: () {

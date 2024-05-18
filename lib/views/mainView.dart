@@ -1,4 +1,6 @@
+import 'package:facultyconsultationscheduling/views/consultations.dart';
 import 'package:facultyconsultationscheduling/views/loginPage.dart';
+import 'package:facultyconsultationscheduling/widgets/customDrawable.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,6 +16,7 @@ class _MainViewState extends State<MainView> {
   User? user;
   FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Widget currentPage = Consultations();
 
   @override
   void initState() {
@@ -49,32 +52,14 @@ class _MainViewState extends State<MainView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Main View'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Welcome ${user?.email ?? 'Guest'},', // Displaying guest if no user is found
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                // Sign out the user
-                await _auth.signOut();
-                // Navigate back to the login page
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (_) =>
-                        LoginScreen())); // Ensure LoginPage is the correct route
-              },
-              child: Text('Log Out'),
-            ),
-          ],
-        ),
-      ),
+      appBar: AppBar(),
+      drawer: CustomDrawer(onPageChanged: (page) {
+        setState(() {
+          currentPage = page;
+        });
+        Navigator.pop(context); // Close the drawer
+      }),
+      body: currentPage,
     );
   }
 }
