@@ -24,16 +24,16 @@ class ConsultationRequest with DisplayMixin {
       this.facultyComment});
 
   final BuildContext? context;
-  final String? id;
-  final String? studentID;
+  String? id;
+  String? studentID;
   String? facultyID;
-  final String? requestTitle;
-  final String? requestDescription;
-  final Timestamp? proposedTimeStart;
-  final Timestamp? proposedTimeEnd;
-  final String? status;
-  final Timestamp? statusUpdateDate;
-  final String? facultyComment;
+  String? requestTitle;
+  String? requestDescription;
+  Timestamp? proposedTimeStart;
+  Timestamp? proposedTimeEnd;
+  String? status;
+  Timestamp? statusUpdateDate;
+  String? facultyComment;
 
   factory ConsultationRequest.fromMap(Map<String, dynamic> data, id) {
     return ConsultationRequest(
