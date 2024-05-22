@@ -139,10 +139,17 @@ class Activity with DisplayMixin {
     return allActivities;
   }
 
+  Future<List<Activity>> getAllActivities() async {
+    QuerySnapshot querySnapshot = await activities.get();
+    final allActivities = querySnapshot.docs
+        .map((doc) =>
+            Activity.fromMap(doc.data() as Map<String, dynamic>, doc.id))
+        .toList();
+    return allActivities;
+  }
+
   Future<List<Appointment>> getAppointmentsByFacultyID() async {
-    QuerySnapshot querySnapshot = await activities
-        .where('facultyID', isEqualTo: _firebase.currentUser?.uid)
-        .get();
+    QuerySnapshot querySnapshot = await activities.get();
     final allActivities = querySnapshot.docs
         .map((doc) =>
             convertToAppointment(doc.data() as Map<String, dynamic>, doc.id))

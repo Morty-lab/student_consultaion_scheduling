@@ -9,6 +9,7 @@ final CollectionReference users =
 
 class AppUser with DisplayMixin {
   AppUser({
+    this.isActive,
     this.name,
     this.email,
     this.password,
@@ -16,6 +17,7 @@ class AppUser with DisplayMixin {
     this.uid,
   });
 
+  final bool? isActive;
   final String? uid;
   final String? name;
   final String? email;
@@ -40,7 +42,8 @@ class AppUser with DisplayMixin {
         'id': userCredential.user!.uid,
         'name': name,
         'email': email,
-        'role': "student"
+        'role': "student",
+        'isActive': true`
       });
     } on FirebaseAuthException catch (e) {
       showError(errorMessage: e.message!, errorTitle: 'Authentication Error!');

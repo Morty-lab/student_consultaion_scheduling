@@ -4,8 +4,6 @@ import 'package:facultyconsultationscheduling/widgets/customDrawable.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:facultyconsultationscheduling/services/auth_service.dart'; // Assuming you have an AuthService for user-related operations
-import 'package:facultyconsultationscheduling/models/app_user.dart'; // Assuming you have an AppUser model for user data
 
 class MainView extends StatefulWidget {
   @override

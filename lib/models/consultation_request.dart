@@ -11,7 +11,8 @@ final CollectionReference consultationRequests =
 
 class ConsultationRequest with DisplayMixin {
   ConsultationRequest(
-      {this.id,
+      {this.createdAt,
+      this.id,
       this.studentID,
       this.facultyID,
       this.requestTitle,
@@ -24,6 +25,7 @@ class ConsultationRequest with DisplayMixin {
       this.facultyComment});
 
   final BuildContext? context;
+
   String? id;
   String? studentID;
   String? facultyID;
@@ -33,6 +35,7 @@ class ConsultationRequest with DisplayMixin {
   Timestamp? proposedTimeEnd;
   String? status;
   Timestamp? statusUpdateDate;
+  Timestamp? createdAt;
   String? facultyComment;
 
   factory ConsultationRequest.fromMap(Map<String, dynamic> data, id) {
@@ -46,7 +49,8 @@ class ConsultationRequest with DisplayMixin {
         proposedTimeEnd: data['proposedTimeEnd'],
         status: data['status'],
         statusUpdateDate: data['statusUpdateDate'],
-        facultyComment: data['facultyComment']);
+        facultyComment: data['facultyComment'],
+        createdAt: data['createdAt']);
   }
 
   Future<void> manageConsultationRequest() async {
@@ -117,5 +121,19 @@ class ConsultationRequest with DisplayMixin {
         .toList();
 
     return allConsultationRequests;
+  }
+
+  void reset() {
+    id = '';
+    studentID = '';
+    facultyID = '';
+    requestTitle = '';
+    requestDescription = '';
+    proposedTimeStart = Timestamp.now();
+    proposedTimeEnd = Timestamp.now();
+    status = 'Pending';
+    statusUpdateDate = Timestamp.now();
+    context = null;
+    facultyComment = '';
   }
 }

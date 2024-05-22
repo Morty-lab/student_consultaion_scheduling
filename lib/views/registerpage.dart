@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:facultyconsultationscheduling/services/auth_service.dart'; // Import your AuthService
 import 'package:facultyconsultationscheduling/models/app_user.dart';
 import 'loginPage.dart';
+import 'mainView.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -85,6 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               context: context,
                             );
                             await appUser.register();
+                            MaterialPageRoute(builder: (_) => MainView());
                           },
                           child: Text("Register"),
                         ),
@@ -98,7 +100,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onTap: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (_) => LoginScreen()),
+                                MaterialPageRoute(
+                                    builder: (_) => LoginScreen()),
                               );
                             },
                             child: Text(

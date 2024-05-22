@@ -33,9 +33,21 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            title: Text('Consultation History'),
+            onTap: () {
+              // onPageChanged(Consultations());
+            },
+          ),
+          ListTile(
             title: Text('Calendar'),
             onTap: () {
-              // onPageChanged(FileUploadingPage());
+              // onPageChanged(CalendarOfActivitiesView());
+            },
+          ),
+          ListTile(
+            title: Text('Faculties'),
+            onTap: () {
+              // onPageChanged(CalendarOfActivitiesView());
             },
           ),
           ListTile(
