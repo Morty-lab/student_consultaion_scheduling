@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:facultyconsultationscheduling/models/consultation_request.dart';
 import 'package:facultyconsultationscheduling/utils/format_date.dart';
+import 'package:flutter/widgets.dart';
 import '../models/faculty.dart'; // Adjust the path as necessary
 
 enum Type { start, end }
@@ -91,82 +92,260 @@ class _ConsultationsState extends State<Consultations>
     User? currentUser = auth.currentUser;
     String? userId = currentUser?.uid;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Consultations'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: myTabs,
-        ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          FutureBuilder<List<ConsultationRequest>>(
-            future: fetchPendingRequests(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(
-                          snapshot.data![index].requestTitle ?? "No Title"),
-                      subtitle: Text(snapshot.data![index].requestDescription ??
-                          "No Description"),
-                    );
-                  },
-                );
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
-              return CircularProgressIndicator();
-            },
+          Container(
+              color: Colors.white,
+              child: TabBar(
+                controller: _tabController,
+                tabs: myTabs,
+                labelColor: Colors.blue.shade900, // Set selected tab color to blue shade 900
+                unselectedLabelColor: Colors.grey, // Set unselected tab color to grey
+              ),
           ),
-          FutureBuilder<List<ConsultationRequest>>(
-            future: fetchApprovedRequests(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(
-                          snapshot.data![index].requestTitle ?? "No Title"),
-                      subtitle: Text(snapshot.data![index].requestDescription ??
-                          "No Description"),
-                    );
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                FutureBuilder<List<ConsultationRequest>>(
+                  future: fetchPendingRequests(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                            child: Material(
+                              color: Colors.white,
+                              elevation: 1,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: ListTile(
+                                  title: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width * 0.3,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                snapshot.data![index].requestTitle ?? "No Title", style: TextStyle(fontSize:  18, fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              snapshot.data![index].requestDescription ?? "No Description", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                            Text(
+                                              'Faculty: Axl', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
+                                            ),
+                                            Text(
+                                              'Start Date: 05/26/2024 10:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
+                                            ),
+                                            Text(
+                                              'End Date: 05/26/2024 11:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
+                                            ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.edit),
+                                      onPressed: () {
+                                        // Add edit action
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.cancel),
+                                      onPressed: () {
+                                        // Add cancel action
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                ),
+                              ),
+                            ),
+                            
+                          );
+                        },
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+                    return CircularProgressIndicator();
                   },
-                );
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
-              return CircularProgressIndicator();
-            },
-          ),
-          FutureBuilder<List<ConsultationRequest>>(
-            future: fetchDeniedRequests(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(
-                          snapshot.data![index].requestTitle ?? "No Title"),
-                      subtitle: Text(snapshot.data![index].requestDescription ??
-                          "No Description"),
-                    );
+                ),
+                FutureBuilder<List<ConsultationRequest>>(
+                  future: fetchApprovedRequests(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                            child: Material(
+                              color: Colors.white,
+                              elevation: 1,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: ListTile(
+                                  title: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width * 0.3,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                snapshot.data![index].requestTitle ?? "No Title", style: TextStyle(fontSize:  18, fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              snapshot.data![index].requestDescription ?? "No Description", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                            Text(
+                                              'Faculty: Axl', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
+                                            ),
+                                            Text(
+                                              'Start Date: 05/26/2024 10:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
+                                            ),
+                                            Text(
+                                              'End Date: 05/26/2024 11:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
+                                            ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.edit),
+                                      onPressed: () {
+                                        // Add edit action
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.cancel),
+                                      onPressed: () {
+                                        // Add cancel action
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                ),
+                              ),
+                            ),
+                            
+                          );
+                        },
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+                    return CircularProgressIndicator();
                   },
-                );
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
-              return CircularProgressIndicator();
-            },
+                ),
+                FutureBuilder<List<ConsultationRequest>>(
+                  future: fetchDeniedRequests(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                            child: Material(
+                              color: Colors.white,
+                              elevation: 1,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: ListTile(
+                                  title: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width * 0.3,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                snapshot.data![index].requestTitle ?? "No Title", style: TextStyle(fontSize:  18, fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              snapshot.data![index].requestDescription ?? "No Description", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                            Text(
+                                              'Faculty: Axl', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
+                                            ),
+                                            Text(
+                                              'Start Date: 05/26/2024 10:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
+                                            ),
+                                            Text(
+                                              'End Date: 05/26/2024 11:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
+                                            ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.edit),
+                                      onPressed: () {
+                                        // Add edit action
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.cancel),
+                                      onPressed: () {
+                                        // Add cancel action
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+                    return CircularProgressIndicator();
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           showDialog(
             context: context,
@@ -300,7 +479,8 @@ class _ConsultationsState extends State<Consultations>
           );
         },
         tooltip: 'Add New Request',
-        child: Icon(Icons.add),
+        icon: Icon(Icons.add),
+        label: const Text('Request Consultation'),
       ),
     );
   }

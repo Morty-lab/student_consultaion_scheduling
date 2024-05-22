@@ -50,7 +50,12 @@ class _MainViewState extends State<MainView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Faculty Consultation Scheduling', style: TextStyle(color: Colors.blue.shade900),),
+        backgroundColor: Colors.white, // Set background color to white
+        elevation: 0, // Set elevation to 0
+        iconTheme: IconThemeData(color: Colors.blue.shade900), // Set icon color to blue shade 900
+      ),
       drawer: CustomDrawer(onPageChanged: (page) {
         setState(() {
           currentPage = page;
