@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:facultyconsultationscheduling/models/consultation_request.dart';
-
 import '../models/faculty.dart'; // Adjust the path as necessary
 
 class Consultations extends StatefulWidget {
@@ -133,15 +132,55 @@ class _ConsultationsState extends State<Consultations>
                           decoration:
                               InputDecoration(labelText: 'Request Description'),
                         ),
-                        TextField(
-                          decoration:
-                              InputDecoration(labelText: 'Proposed Time Start'),
-                          keyboardType: TextInputType.datetime,
+                        ElevatedButton(
+                          onPressed: () {
+                            showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime.now(),
+                              builder: (BuildContext context, Widget? child) {
+                                return Theme(
+                                  data: ThemeData.light().copyWith(
+                                    primaryColor: Colors.blue,
+                                  ),
+                                  child: child!,
+                                );
+                              },
+                            ).then((pickedDate) {
+                              if (pickedDate != null) {
+                                Timestamp timestamp =
+                                    Timestamp.fromDate(pickedDate);
+                                _newConsultation.proposedTimeStart = timestamp;
+                              }
+                            });
+                          },
+                          child: Text('Select Proposed Start Date'),
                         ),
-                        TextField(
-                          decoration:
-                              InputDecoration(labelText: 'Proposed Time End'),
-                          keyboardType: TextInputType.datetime,
+                        ElevatedButton(
+                          onPressed: () {
+                            showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime.now(),
+                              builder: (BuildContext context, Widget? child) {
+                                return Theme(
+                                  data: ThemeData.light().copyWith(
+                                    primaryColor: Colors.blue,
+                                  ),
+                                  child: child!,
+                                );
+                              },
+                            ).then((pickedDate) {
+                              if (pickedDate != null) {
+                                Timestamp timestamp =
+                                    Timestamp.fromDate(pickedDate);
+                                _newConsultation.proposedTimeEnd = timestamp;
+                              }
+                            });
+                          },
+                          child: Text('Select Proposed End Date'),
                         ),
                         DropdownButtonFormField<Faculty>(
                           hint: Text('Select Faculty'),
