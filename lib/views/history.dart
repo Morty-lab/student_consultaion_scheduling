@@ -14,6 +14,7 @@ class _HistoryState extends State<History> {
       "requestTitle": "Consultation 1",
       "requestDescription": "Description 1",
       "faculty": "Axl",
+      "status": "Approved",
       "startDate": "05/26/2024 10:00AM",
       "endDate": "05/26/2024 11:00AM"
     },
@@ -64,6 +65,15 @@ class _HistoryState extends State<History> {
                                           fontSize: 14,
                                           fontWeight: FontWeight.w300),
                                     ),
+                                    Text(
+                                      'Status: ' + (_data[index]['status'] ?? "No Status"),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w300,
+                                         color: _getColorForStatus(_data[index]['status'] ?? ""),
+                                      ),
+                                    ),
+                                    
                                   ],
                                 ),
                               ),
@@ -105,3 +115,13 @@ class _HistoryState extends State<History> {
   }
 }
 
+Color _getColorForStatus(String status) {
+  switch (status) {
+    case 'Approved':
+      return Colors.blue.shade900;
+    case 'Declined':
+      return Colors.red.shade900;
+    default:
+      return Colors.black; // You can set a default color here if needed
+  }
+}
