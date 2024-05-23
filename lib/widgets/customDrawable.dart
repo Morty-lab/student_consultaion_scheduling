@@ -1,4 +1,5 @@
 import 'package:facultyconsultationscheduling/views/consultations.dart';
+import 'package:facultyconsultationscheduling/views/history.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +38,7 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.history),
             title: Text('Consultation History'),
             onTap: () {
-              
+              onPageChanged(History());
             },
           ),
           ListTile(
