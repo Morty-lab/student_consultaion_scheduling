@@ -1,5 +1,7 @@
 import 'package:facultyconsultationscheduling/views/consultations.dart';
+import 'package:facultyconsultationscheduling/views/fac.dart';
 import 'package:facultyconsultationscheduling/views/history.dart';
+import 'package:facultyconsultationscheduling/views/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -52,14 +54,14 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.people),
             title: Text('Faculties'),
             onTap: () {
-              
+               onPageChanged(Fac());
             },
           ),
           ListTile(
             leading: Icon(Icons.person),
             title: Text('Profile'),
             onTap: () {
-              
+              onPageChanged(Profile());
             },
           ),
           ListTile(
