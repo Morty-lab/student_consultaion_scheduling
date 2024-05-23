@@ -8,29 +8,31 @@ final CollectionReference users =
     FirebaseFirestore.instance.collection('users');
 
 class AppUser with DisplayMixin {
-  AppUser({
-    this.isActive,
-    this.name,
-    this.email,
-    this.password,
-    this.context,
-    this.uid,
-  });
+  AppUser(
+      {this.isActive,
+      this.name,
+      this.email,
+      this.password,
+      this.context,
+      this.uid,
+      this.role});
 
   final bool? isActive;
   final String? uid;
   final String? name;
   final String? email;
   final String? password;
+  final String? role;
   final BuildContext? context;
 
   factory AppUser.fromMap(Map<String, dynamic> data, id) {
     return AppUser(
-      uid: id,
-      name: data['name'],
-      email: data['email'],
-      password: data['password'],
-    );
+        uid: id,
+        name: data['name'],
+        email: data['email'],
+        password: data['password'],
+        role: data["role"],
+        isActive: data["isActive"]);
   }
 
   Future<void> register() async {
