@@ -161,13 +161,190 @@ class _ConsultationsState extends State<Consultations>
                                     IconButton(
                                       icon: Icon(Icons.edit),
                                       onPressed: () {
-                                        // Add edit action
+                                        showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text("Edit Request"),
+                                            content: SingleChildScrollView(
+                                              child: Form(
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    TextFormField(
+                                                      controller: _titleController,
+                                                      decoration:
+                                                          InputDecoration(labelText: 'Request Title'),
+                                                    ),
+                                                    TextFormField(
+                                                      controller: _descriptionController,
+                                                      decoration:
+                                                          InputDecoration(labelText: 'Request Description'),
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                    Text(
+                                                        'Time Start: (Selected: ${formatTimestamp(convertToFirebaseTimestamp(activityDateStart, activityTimeStart))})',
+                                                        style: TextStyle(fontWeight: FontWeight.w500)),
+                                                    const SizedBox(height: 8),
+                                                    Row(
+                                                      children: [
+                                                        ElevatedButton(
+                                                            onPressed: () {
+                                                              _selectDate(activityDateStart, Type.start);
+                                                              setState(() {});
+                                                            },
+                                                            child: const Text('Select Start Date')),
+                                                        const SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        ElevatedButton(
+                                                            onPressed: () {
+                                                              _selectTime(activityTimeStart, Type.start);
+                                                              setState(() {});
+                                                            },
+                                                            child: const Text('Select Start Time'))
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height:10),
+                                                    Text(
+                                                        'Time End: (Selected: ${formatTimestamp(convertToFirebaseTimestamp(activityDateEnd, activityTimeEnd))})',
+                                                        style: TextStyle(fontWeight: FontWeight.w500)),
+                                                    const SizedBox(height: 8),
+                                                    Row(
+                                                      children: [
+                                                        ElevatedButton(
+                                                            onPressed: () {
+                                                              _selectDate(activityDateEnd, Type.end);
+                                                              setState(() {});
+                                                            },
+                                                            child: const Text('Select End Date')),
+                                                        const SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        ElevatedButton(
+                                                            onPressed: () {
+                                                              _selectTime(activityTimeEnd, Type.end);
+                                                              setState(() {});
+                                                            },
+                                                            child: const Text('Select End Time'))
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                    DropdownButtonFormField<Faculty>(
+                                                      hint: Text('Select Faculty'),
+                                                      items: faculties.map((Faculty faculty) {
+                                                        return DropdownMenuItem<Faculty>(
+                                                          value: faculty,
+                                                          child: Text(faculty
+                                                              .name!), // Display name in the dropdown
+                                                        );
+                                                      }).toList(),
+                                                      onChanged: (Faculty? selectedFaculty) {
+                                                        if (selectedFaculty != null) {
+                                                          facultyID = selectedFaculty
+                                                              .id; // Ensure this matches the property name in your Faculty model
+                                                        }
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                style: TextButton.styleFrom(
+                                                  backgroundColor: Colors.blue.shade900,
+                                                ),
+                                                child: Text('Submit', style: TextStyle(color: Colors.white),),
+                                                onPressed: () {
+                                                  // String requestTitle = _titleController.text;
+                                                  // String requestDescription = _descriptionController.text;
+                                                  // Timestamp proposedStartTime = convertToFirebaseTimestamp(
+                                                  //     activityDateStart, activityTimeStart);
+                                                  // Timestamp proposedEndTime = convertToFirebaseTimestamp(
+                                                  //     activityDateEnd, activityTimeEnd);
+                                                  // String facultyId = facultyID!;
+
+                                                  // // Save to Firestore
+                                                  // FirebaseFirestore.instance
+                                                  //     .collection('consultationRequests')
+                                                  //     .add({
+                                                  //   'studentID': userId,
+                                                  //   'facultyID': facultyId,
+                                                  //   'requestTitle': requestTitle,
+                                                  //   'requestDescription': requestDescription,
+                                                  //   'proposedTimeStart': proposedStartTime,
+                                                  //   'proposedTimeEnd': proposedEndTime,
+                                                  //   'status': 'Pending',
+                                                  //   'statusUpdateDate': Timestamp.now(),
+                                                  //   'createdAt': FieldValue.serverTimestamp()
+                                                  // }).then((value) {
+                                                  //   _titleController.clear();
+                                                  //   _descriptionController.clear();
+                                                  //   activityDateStart = DateTime.now();
+                                                  //   activityTimeStart = TimeOfDay.now();
+                                                  //   activityDateEnd = DateTime.now();
+                                                  //   activityTimeEnd = TimeOfDay.now();
+                                                  //   facultyID = "";
+                                                  //   print("Consultation Request Added");
+                                                  // }).catchError((error) {
+                                                  //   print("Failed to add consultation request: $error");
+                                                  // });
+                                                  // Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                       },
                                     ),
                                     IconButton(
                                       icon: Icon(Icons.cancel),
                                       onPressed: () {
-                                        // Add cancel action
+                                        showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Text(
+                                                  'Do you want to cancel the request?',
+                                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                SizedBox(height: 20), // Add some space between the text and buttons
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: <Widget>[
+                                                    TextButton(
+                                                      style: TextButton.styleFrom(
+                                                        backgroundColor: Colors.blue.shade900,
+                                                      ),
+                                                      onPressed: () {
+                                                        // Add your "Yes" button action here
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      child: Text('Yes', style: TextStyle(color: Colors.white),),
+                                                    ),
+                                                    TextButton(
+                                                      style: TextButton.styleFrom(
+                                                        backgroundColor: Colors.blue.shade900,
+                                                      ),
+                                                      onPressed: () {
+                                                        // Add your "No" button action here
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      child: Text('No', style: TextStyle(color: Colors.white),),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+
                                       },
                                     ),
                                   ],
@@ -233,23 +410,6 @@ class _ConsultationsState extends State<Consultations>
                                       )
                                     ],
                                   ),
-                                  trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.edit),
-                                      onPressed: () {
-                                        // Add edit action
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.cancel),
-                                      onPressed: () {
-                                        // Add cancel action
-                                      },
-                                    ),
-                                  ],
-                                ),
                                 ),
                               ),
                             ),
@@ -311,23 +471,6 @@ class _ConsultationsState extends State<Consultations>
                                       )
                                     ],
                                   ),
-                                  trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.edit),
-                                      onPressed: () {
-                                        // Add edit action
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.cancel),
-                                      onPressed: () {
-                                        // Add cancel action
-                                      },
-                                    ),
-                                  ],
-                                ),
                                 ),
                               ),
                             ),
@@ -366,6 +509,7 @@ class _ConsultationsState extends State<Consultations>
                           decoration:
                               InputDecoration(labelText: 'Request Description'),
                         ),
+                        SizedBox(height: 10),
                         Text(
                             'Time Start: (Selected: ${formatTimestamp(convertToFirebaseTimestamp(activityDateStart, activityTimeStart))})',
                             style: TextStyle(fontWeight: FontWeight.w500)),
@@ -389,7 +533,7 @@ class _ConsultationsState extends State<Consultations>
                                 child: const Text('Select Start Time'))
                           ],
                         ),
-                        const SizedBox(height: 25),
+                        const SizedBox(height: 10),
                         Text(
                             'Time End: (Selected: ${formatTimestamp(convertToFirebaseTimestamp(activityDateEnd, activityTimeEnd))})',
                             style: TextStyle(fontWeight: FontWeight.w500)),
@@ -413,6 +557,7 @@ class _ConsultationsState extends State<Consultations>
                                 child: const Text('Select End Time'))
                           ],
                         ),
+                        SizedBox(height: 10),
                         DropdownButtonFormField<Faculty>(
                           hint: Text('Select Faculty'),
                           items: faculties.map((Faculty faculty) {
@@ -434,8 +579,12 @@ class _ConsultationsState extends State<Consultations>
                   ),
                 ),
                 actions: <Widget>[
+                  
                   TextButton(
-                    child: Text('Submit'),
+                    style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue.shade900,
+                    ),
+                    child: Text('Submit', style: TextStyle(color: Colors.white),),
                     onPressed: () {
                       String requestTitle = _titleController.text;
                       String requestDescription = _descriptionController.text;
