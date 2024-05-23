@@ -1,3 +1,6 @@
+import 'package:emailjs/emailjs.dart';
+import 'package:facultyconsultationscheduling/models/app_user.dart';
+import 'package:facultyconsultationscheduling/services/mail_sender.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,6 +30,7 @@ class _ConsultationsState extends State<Consultations>
   DateTime activityDateEnd = DateTime.now();
   TimeOfDay activityTimeEnd = TimeOfDay.now();
   FirebaseAuth auth = FirebaseAuth.instance;
+  List<Faculty> faculties = [];
 
   late TabController _tabController;
   List<Tab> myTabs = <Tab>[
@@ -73,7 +77,6 @@ class _ConsultationsState extends State<Consultations>
     }
   }
 
-  List<Faculty> faculties = [];
   @override
   void initState() {
     super.initState();
@@ -91,17 +94,49 @@ class _ConsultationsState extends State<Consultations>
   Widget build(BuildContext context) {
     User? currentUser = auth.currentUser;
     String? userId = currentUser?.uid;
+
+    void _sendEmail(String facultyID, Timestamp start, Timestamp end) async {
+      Faculty? faculty = faculties.firstWhere((f) => f.id == facultyID);
+      String date = "${formatTimestamp(start)} to ${formatTimestamp(end)}";
+      try {
+        await EmailJS.send(
+          'service_xz7s429',
+          'template_aqv3ke8',
+          {
+            'from_email': currentUser?.email,
+            'to_email': faculty.email,
+            'message': _descriptionController.text,
+            'to_name': faculty.name,
+            'date': date,
+            'from_name': currentUser?.displayName
+          },
+          const Options(
+            publicKey: 'z7ftgvbeNZajNRWkz',
+            privateKey: 'CnaTN4WJiZK3CLTFuhVMd',
+          ),
+        );
+        print('SUCCESS!');
+      } catch (error) {
+        if (error is EmailJSResponseStatus) {
+          print('ERROR... ${error.status}: ${error.text}');
+        }
+        print(error.toString());
+      }
+    }
+
     return Scaffold(
       body: Column(
         children: [
           Container(
-              color: Colors.white,
-              child: TabBar(
-                controller: _tabController,
-                tabs: myTabs,
-                labelColor: Colors.blue.shade900, // Set selected tab color to blue shade 900
-                unselectedLabelColor: Colors.grey, // Set unselected tab color to grey
-              ),
+            color: Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              tabs: myTabs,
+              labelColor: Colors
+                  .blue.shade900, // Set selected tab color to blue shade 900
+              unselectedLabelColor:
+                  Colors.grey, // Set unselected tab color to grey
+            ),
           ),
           Expanded(
             child: TabBarView(
@@ -115,7 +150,8 @@ class _ConsultationsState extends State<Consultations>
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           return Container(
-                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                            margin:
+                                EdgeInsets.only(left: 16, right: 16, top: 16),
                             child: Material(
                               color: Colors.white,
                               elevation: 1,
@@ -123,59 +159,76 @@ class _ConsultationsState extends State<Consultations>
                                 padding: const EdgeInsets.all(12.0),
                                 child: ListTile(
                                   title: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.3,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                                snapshot.data![index].requestTitle ?? "No Title", style: TextStyle(fontSize:  18, fontWeight: FontWeight.bold),
+                                              snapshot.data![index]
+                                                      .requestTitle ??
+                                                  "No Title",
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              snapshot.data![index].requestDescription ?? "No Description", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                                              snapshot.data![index]
+                                                      .requestDescription ??
+                                                  "No Description",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300),
                                             ),
                                           ],
                                         ),
                                       ),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                            Text(
-                                              'Faculty: Axl', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
-                                            ),
-                                            Text(
-                                              'Start Date: 05/26/2024 10:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
-                                            ),
-                                            Text(
-                                              'End Date: 05/26/2024 11:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
-                                            ),
+                                          Text('Faculty: Axl',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300)),
+                                          Text('Start Date: 05/26/2024 10:00AM',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300)),
+                                          Text('End Date: 05/26/2024 11:00AM',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300)),
                                         ],
                                       )
                                     ],
                                   ),
                                   trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.edit),
-                                      onPressed: () {
-                                        // Add edit action
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.cancel),
-                                      onPressed: () {
-                                        // Add cancel action
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.edit),
+                                        onPressed: () {
+                                          // Add edit action
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.cancel),
+                                        onPressed: () {
+                                          // Add cancel action
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                            
                           );
                         },
                       );
@@ -193,7 +246,8 @@ class _ConsultationsState extends State<Consultations>
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           return Container(
-                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                            margin:
+                                EdgeInsets.only(left: 16, right: 16, top: 16),
                             child: Material(
                               color: Colors.white,
                               elevation: 1,
@@ -201,59 +255,76 @@ class _ConsultationsState extends State<Consultations>
                                 padding: const EdgeInsets.all(12.0),
                                 child: ListTile(
                                   title: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.3,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                                snapshot.data![index].requestTitle ?? "No Title", style: TextStyle(fontSize:  18, fontWeight: FontWeight.bold),
+                                              snapshot.data![index]
+                                                      .requestTitle ??
+                                                  "No Title",
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              snapshot.data![index].requestDescription ?? "No Description", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                                              snapshot.data![index]
+                                                      .requestDescription ??
+                                                  "No Description",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300),
                                             ),
                                           ],
                                         ),
                                       ),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                            Text(
-                                              'Faculty: Axl', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
-                                            ),
-                                            Text(
-                                              'Start Date: 05/26/2024 10:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
-                                            ),
-                                            Text(
-                                              'End Date: 05/26/2024 11:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
-                                            ),
+                                          Text('Faculty: Axl',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300)),
+                                          Text('Start Date: 05/26/2024 10:00AM',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300)),
+                                          Text('End Date: 05/26/2024 11:00AM',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300)),
                                         ],
                                       )
                                     ],
                                   ),
                                   trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.edit),
-                                      onPressed: () {
-                                        // Add edit action
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.cancel),
-                                      onPressed: () {
-                                        // Add cancel action
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.edit),
+                                        onPressed: () {
+                                          // Add edit action
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.cancel),
+                                        onPressed: () {
+                                          // Add cancel action
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                            
                           );
                         },
                       );
@@ -271,7 +342,8 @@ class _ConsultationsState extends State<Consultations>
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           return Container(
-                            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+                            margin:
+                                EdgeInsets.only(left: 16, right: 16, top: 16),
                             child: Material(
                               color: Colors.white,
                               elevation: 1,
@@ -279,55 +351,73 @@ class _ConsultationsState extends State<Consultations>
                                 padding: const EdgeInsets.all(12.0),
                                 child: ListTile(
                                   title: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.3,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                                snapshot.data![index].requestTitle ?? "No Title", style: TextStyle(fontSize:  18, fontWeight: FontWeight.bold),
+                                              snapshot.data![index]
+                                                      .requestTitle ??
+                                                  "No Title",
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              snapshot.data![index].requestDescription ?? "No Description", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                                              snapshot.data![index]
+                                                      .requestDescription ??
+                                                  "No Description",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300),
                                             ),
                                           ],
                                         ),
                                       ),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                            Text(
-                                              'Faculty: Axl', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
-                                            ),
-                                            Text(
-                                              'Start Date: 05/26/2024 10:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
-                                            ),
-                                            Text(
-                                              'End Date: 05/26/2024 11:00AM', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)
-                                            ),
+                                          Text('Faculty: Axl',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300)),
+                                          Text('Start Date: 05/26/2024 10:00AM',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300)),
+                                          Text('End Date: 05/26/2024 11:00AM',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300)),
                                         ],
                                       )
                                     ],
                                   ),
                                   trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.edit),
-                                      onPressed: () {
-                                        // Add edit action
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.cancel),
-                                      onPressed: () {
-                                        // Add cancel action
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.edit),
+                                        onPressed: () {
+                                          // Add edit action
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.cancel),
+                                        onPressed: () {
+                                          // Add cancel action
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -459,6 +549,8 @@ class _ConsultationsState extends State<Consultations>
                         'statusUpdateDate': Timestamp.now(),
                         'createdAt': FieldValue.serverTimestamp()
                       }).then((value) {
+                        _sendEmail(
+                            facultyId, proposedStartTime, proposedEndTime);
                         _titleController.clear();
                         _descriptionController.clear();
                         activityDateStart = DateTime.now();
@@ -466,6 +558,7 @@ class _ConsultationsState extends State<Consultations>
                         activityDateEnd = DateTime.now();
                         activityTimeEnd = TimeOfDay.now();
                         facultyID = "";
+
                         print("Consultation Request Added");
                       }).catchError((error) {
                         print("Failed to add consultation request: $error");
@@ -538,6 +631,7 @@ class _ConsultationsState extends State<Consultations>
           .map((doc) => Faculty(
                 id: doc["id"],
                 name: doc["name"],
+                email: doc["email"],
               ))
           .toList();
     });
