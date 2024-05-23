@@ -19,52 +19,58 @@ class CustomDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Colors.white,
             ),
             child: Text(
               "Faculty Consultation Scheduling",
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.blue.shade900),
             ),
           ),
           ListTile(
+            leading: Icon(Icons.list),
             title: Text('Consultations'),
             onTap: () {
               onPageChanged(Consultations());
             },
           ),
           ListTile(
+            leading: Icon(Icons.history),
             title: Text('Consultation History'),
             onTap: () {
-              // onPageChanged(Consultations());
+              
             },
           ),
           ListTile(
+            leading: Icon(Icons.calendar_today),
             title: Text('Calendar'),
             onTap: () {
-              // onPageChanged(CalendarOfActivitiesView());
+              
             },
           ),
           ListTile(
+            leading: Icon(Icons.people),
             title: Text('Faculties'),
             onTap: () {
-              // onPageChanged(CalendarOfActivitiesView());
+              
             },
           ),
           ListTile(
+            leading: Icon(Icons.person),
             title: Text('Profile'),
             onTap: () {
-              // onPageChanged(TextToSpeech());
+              
             },
           ),
           ListTile(
+            leading: Icon(Icons.logout),
             title: Text('Logout'),
             onTap: () async {
               await _auth.signOut();
-              // Navigate back to the login page
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => LoginScreen()));
+              
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
             },
           ),
+
         ],
       ),
     );

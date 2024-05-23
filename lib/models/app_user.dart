@@ -43,7 +43,7 @@ class AppUser with DisplayMixin {
         'name': name,
         'email': email,
         'role': "student",
-        'isActive': true
+        'isActive': true,
       });
     } on FirebaseAuthException catch (e) {
       showError(errorMessage: e.message!, errorTitle: 'Authentication Error!');
