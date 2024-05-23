@@ -376,7 +376,7 @@ class _PendingtabState extends State<Pendingtab> {
                                                     .doc(documentId)
                                                     .update({
                                                   'status':
-                                                      'cancelled', // Change the status to 'cancelled'
+                                                      'Cancelled', // Change the status to 'cancelled'
                                                 });
 
                                                 Navigator.of(context).pop();
@@ -422,7 +422,10 @@ class _PendingtabState extends State<Pendingtab> {
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");
         }
-        return CircularProgressIndicator();
+        return Scaffold(
+            body: Center(
+          child: CircularProgressIndicator(),
+        ));
       },
     );
   }
