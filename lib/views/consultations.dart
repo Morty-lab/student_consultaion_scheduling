@@ -2,6 +2,7 @@ import 'package:emailjs/emailjs.dart';
 import 'package:facultyconsultationscheduling/models/app_user.dart';
 import 'package:facultyconsultationscheduling/services/mail_sender.dart';
 import 'package:facultyconsultationscheduling/views/tabs/approvedTab.dart';
+import 'package:facultyconsultationscheduling/views/tabs/cancelledTab.dart';
 import 'package:facultyconsultationscheduling/views/tabs/declinedTab.dart';
 import 'package:facultyconsultationscheduling/views/tabs/pendingTab.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,6 +41,7 @@ class _ConsultationsState extends State<Consultations>
     Tab(text: 'Pending'),
     Tab(text: 'Approved'),
     Tab(text: 'Denied'),
+    Tab(text: "Cancelled")
   ];
 
   Future<void> _selectDate(DateTime selectedDate, Type type) async {
@@ -170,6 +172,7 @@ class _ConsultationsState extends State<Consultations>
                 Pendingtab(),
                 Approvedtab(),
                 DeclinedTab(),
+                CancelledTab()
               ],
             ),
           ),
