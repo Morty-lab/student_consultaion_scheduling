@@ -6,6 +6,7 @@ import 'package:facultyconsultationscheduling/views/tabs/cancelledTab.dart';
 import 'package:facultyconsultationscheduling/views/tabs/declinedTab.dart';
 import 'package:facultyconsultationscheduling/views/tabs/pendingTab.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:facultyconsultationscheduling/models/consultation_request.dart';
@@ -38,8 +39,8 @@ class _ConsultationsState extends State<Consultations>
 
   late TabController _tabController;
   List<Tab> myTabs = <Tab>[
-    Tab(text: 'Pending'),
     Tab(text: 'Approved'),
+    Tab(text: 'Pending'),
     Tab(text: 'Denied'),
     Tab(text: "Cancelled")
   ];
@@ -159,21 +160,24 @@ class _ConsultationsState extends State<Consultations>
             child: TabBar(
               controller: _tabController,
               tabs: myTabs,
-              labelColor: Colors
-                  .blue.shade900, // Set selected tab color to blue shade 900
+              labelColor: const Color.fromARGB(
+                  255, 22, 96, 165), // Set selected tab color to blue shade 900
               unselectedLabelColor:
                   Colors.grey, // Set unselected tab color to grey
             ),
           ),
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                Pendingtab(),
-                Approvedtab(),
-                DeclinedTab(),
-                CancelledTab()
-              ],
+            child: Container(
+              color: const Color.fromARGB(255, 255, 255, 255),
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  Approvedtab(),
+                  Pendingtab(),
+                  DeclinedTab(),
+                  CancelledTab()
+                ],
+              ),
             ),
           ),
         ],
@@ -184,72 +188,93 @@ class _ConsultationsState extends State<Consultations>
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text("New Request"),
                 content: SingleChildScrollView(
                   child: Form(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
+                        Text(
+                          "Request Consultation",
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Color.fromARGB(255, 63, 63, 63)),
+                        ),
+                        Divider(
+                          color: Colors.black,
+                          thickness: 0.2,
+                        ),
                         TextFormField(
                           controller: _titleController,
                           decoration:
                               InputDecoration(labelText: 'Request Title'),
+                          style: TextStyle(fontWeight: FontWeight.normal),
                         ),
                         TextFormField(
                           controller: _descriptionController,
                           decoration:
                               InputDecoration(labelText: 'Request Description'),
+                          style: TextStyle(fontWeight: FontWeight.normal),
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 25),
                         Text(
                             'Time Start: (Selected: ${formatTimestamp(convertToFirebaseTimestamp(activityDateStart, activityTimeStart))})',
-                            style: TextStyle(fontWeight: FontWeight.w500)),
+                            style: TextStyle(fontWeight: FontWeight.normal)),
                         const SizedBox(height: 8),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  _selectDate(activityDateStart, Type.start);
-                                  setState(() {});
-                                },
-                                child: const Text('Select Start Date')),
-                            const SizedBox(
-                              width: 5,
+                            Flexible(
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    _selectDate(activityDateStart, Type.start);
+                                    setState(() {});
+                                  },
+                                  child: const Text('Select Start Date')),
                             ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  _selectTime(activityTimeStart, Type.start);
-                                  setState(() {});
-                                },
-                                child: const Text('Select Start Time'))
+                            Flexible(
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    _selectTime(activityTimeStart, Type.start);
+                                    setState(() {});
+                                  },
+                                  child: const Text('Select Start Time')),
+                            )
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 25),
                         Text(
                             'Time End: (Selected: ${formatTimestamp(convertToFirebaseTimestamp(activityDateEnd, activityTimeEnd))})',
-                            style: TextStyle(fontWeight: FontWeight.w500)),
+                            style: TextStyle(fontWeight: FontWeight.normal)),
                         const SizedBox(height: 8),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  _selectDate(activityDateEnd, Type.end);
-                                  setState(() {});
-                                },
-                                child: const Text('Select End Date')),
-                            const SizedBox(
-                              width: 5,
+                            Flexible(
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    _selectDate(activityDateEnd, Type.end);
+                                    setState(() {});
+                                  },
+                                  child: const Text('Select End Date')),
                             ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  _selectTime(activityTimeEnd, Type.end);
-                                  setState(() {});
-                                },
-                                child: const Text('Select End Time'))
+                            Flexible(
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    _selectTime(activityTimeEnd, Type.end);
+                                    setState(() {});
+                                  },
+                                  child: const Text('Select End Time')),
+                            )
                           ],
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 20),
                         DropdownButtonFormField<Faculty>(
                           hint: Text('Select Faculty'),
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                              fontFamily: 'Satoshi',
+                              fontSize: 16),
                           items: faculties.map((Faculty faculty) {
                             return DropdownMenuItem<Faculty>(
                               value: faculty,
@@ -269,53 +294,58 @@ class _ConsultationsState extends State<Consultations>
                   ),
                 ),
                 actions: <Widget>[
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.blue.shade900,
-                    ),
-                    child: Text(
-                      'Submit',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () {
-                      String requestTitle = _titleController.text;
-                      String requestDescription = _descriptionController.text;
-                      Timestamp proposedStartTime = convertToFirebaseTimestamp(
-                          activityDateStart, activityTimeStart);
-                      Timestamp proposedEndTime = convertToFirebaseTimestamp(
-                          activityDateEnd, activityTimeEnd);
-                      String facultyId = facultyID!;
+                  SizedBox(
+                    height: 40,
+                    child: TextButton.icon(
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 22, 96, 165),
+                          iconColor: Colors.white),
+                      icon: Icon(Icons.add),
+                      label: Text(
+                        'Request Consultation',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        String requestTitle = _titleController.text;
+                        String requestDescription = _descriptionController.text;
+                        Timestamp proposedStartTime =
+                            convertToFirebaseTimestamp(
+                                activityDateStart, activityTimeStart);
+                        Timestamp proposedEndTime = convertToFirebaseTimestamp(
+                            activityDateEnd, activityTimeEnd);
+                        String facultyId = facultyID!;
 
-                      // Save to Firestore
-                      FirebaseFirestore.instance
-                          .collection('consultationRequests')
-                          .add({
-                        'studentID': userId,
-                        'facultyID': facultyId,
-                        'requestTitle': requestTitle,
-                        'requestDescription': requestDescription,
-                        'proposedTimeStart': proposedStartTime,
-                        'proposedTimeEnd': proposedEndTime,
-                        'status': 'Pending',
-                        'statusUpdateDate': Timestamp.now(),
-                        'createdAt': FieldValue.serverTimestamp()
-                      }).then((value) {
-                        _sendEmail(
-                            facultyId, proposedStartTime, proposedEndTime);
-                        _titleController.clear();
-                        _descriptionController.clear();
-                        activityDateStart = DateTime.now();
-                        activityTimeStart = TimeOfDay.now();
-                        activityDateEnd = DateTime.now();
-                        activityTimeEnd = TimeOfDay.now();
-                        facultyID = "";
+                        // Save to Firestore
+                        FirebaseFirestore.instance
+                            .collection('consultationRequests')
+                            .add({
+                          'studentID': userId,
+                          'facultyID': facultyId,
+                          'requestTitle': requestTitle,
+                          'requestDescription': requestDescription,
+                          'proposedTimeStart': proposedStartTime,
+                          'proposedTimeEnd': proposedEndTime,
+                          'status': 'Pending',
+                          'statusUpdateDate': Timestamp.now(),
+                          'createdAt': FieldValue.serverTimestamp()
+                        }).then((value) {
+                          _sendEmail(
+                              facultyId, proposedStartTime, proposedEndTime);
+                          _titleController.clear();
+                          _descriptionController.clear();
+                          activityDateStart = DateTime.now();
+                          activityTimeStart = TimeOfDay.now();
+                          activityDateEnd = DateTime.now();
+                          activityTimeEnd = TimeOfDay.now();
+                          facultyID = "";
 
-                        print("Consultation Request Added");
-                      }).catchError((error) {
-                        print("Failed to add consultation request: $error");
-                      });
-                      Navigator.of(context).pop();
-                    },
+                          print("Consultation Request Added");
+                        }).catchError((error) {
+                          print("Failed to add consultation request: $error");
+                        });
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                 ],
               );
