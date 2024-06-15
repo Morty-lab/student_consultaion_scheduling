@@ -21,7 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Container(
           margin: const EdgeInsets.all(10.0),
           width: 800,
-          height: 500,
+          height: 450,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,
@@ -86,7 +86,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               context: context,
                             );
                             await appUser.register();
-                            MaterialPageRoute(builder: (_) => MainView());
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (_) => MainView()),
+                            );
                           },
                           child: Text("Register"),
                         ),
@@ -115,20 +118,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
               ),
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
+              Visibility(
+                visible: MediaQuery.of(context).size.width > 700,
+                child: Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                      ),
+                      color: Colors.white,
                     ),
-                    color: Colors.white,
-                  ),
-                  child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(height: 30),
                         Text(
                           'Faculty Support Desk',
                           style: TextStyle(
@@ -138,12 +143,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
+                        SizedBox(height: 20),
                         Image.asset(
                           'lib/assets/images/auth-illustration.png',
-                          width: 300,
-                          height: 300,
+                          width: 200,
+                          height: 200,
                         ),
-                        SizedBox(height: 5),
+                        SizedBox(height: 10),
                         Text(
                           'Schedule your consultation with faculty directly through Faculty Support Desk',
                           textAlign: TextAlign.center,
