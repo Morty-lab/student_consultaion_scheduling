@@ -119,7 +119,7 @@ class _HistoryState extends State<History> {
                                                 fontWeight: FontWeight.w300),
                                           ),
                                           Text(
-                                            'End Date: ${formatTimestamp(consultation.proposedTimeStart!)}',
+                                            'End Date: ${formatTimestamp(consultation.proposedTimeEnd!)}',
                                             style: TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w300),
