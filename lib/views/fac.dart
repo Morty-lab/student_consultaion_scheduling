@@ -131,8 +131,9 @@ class _FacState extends State<Fac> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
+        return SimpleDialog(children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Form(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,56 +234,76 @@ class _FacState extends State<Fac> {
                       )
                     ],
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    height: 40,
+                    child: TextButton.icon(
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 22, 96, 165),
+                          iconColor: Colors.white),
+                      icon: Icon(Icons.add),
+                      label: Text(
+                        'Request Consultation',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        String requestTitle = _titleController.text;
+                        String requestDescription = _descriptionController.text;
+                        Timestamp proposedStartTime =
+                            convertToFirebaseTimestamp(
+                                activityDateStart, activityTimeStart);
+                        Timestamp proposedEndTime = convertToFirebaseTimestamp(
+                            activityDateEnd, activityTimeEnd);
+
+                        if (_titleController.text.isEmpty ||
+                            _descriptionController.text.isEmpty ||
+                            activityDateStart == DateTime.now() ||
+                            activityTimeStart.hour == 0 &&
+                                activityTimeStart.minute == 0 ||
+                            activityDateEnd == DateTime.now() ||
+                            activityTimeEnd.hour == 0 &&
+                                activityTimeEnd.minute == 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  Text('Please fill in all required fields.'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                          return;
+                        }
+                        // Save to Firestore
+                        FirebaseFirestore.instance
+                            .collection('consultationRequests')
+                            .add({
+                          'studentID': userId,
+                          'facultyID': faculty.id,
+                          'requestTitle': requestTitle,
+                          'requestDescription': requestDescription,
+                          'proposedTimeStart': proposedStartTime,
+                          'proposedTimeEnd': proposedEndTime,
+                          'status': 'Pending',
+                          'statusUpdateDate': Timestamp.now(),
+                          'createdAt': FieldValue.serverTimestamp()
+                        }).then((value) {
+                          _sendEmail(
+                              faculty.id, proposedStartTime, proposedEndTime);
+                          resetControllers();
+                          print("Consultation Request Added");
+                        }).catchError((error) {
+                          print("Failed to add consultation request: $error");
+                        });
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
-          actions: <Widget>[
-            SizedBox(
-              height: 40,
-              child: TextButton.icon(
-                style: TextButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 22, 96, 165),
-                    iconColor: Colors.white),
-                icon: Icon(Icons.add),
-                label: Text(
-                  'Request Consultation',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
-                  String requestTitle = _titleController.text;
-                  String requestDescription = _descriptionController.text;
-                  Timestamp proposedStartTime = convertToFirebaseTimestamp(
-                      activityDateStart, activityTimeStart);
-                  Timestamp proposedEndTime = convertToFirebaseTimestamp(
-                      activityDateEnd, activityTimeEnd);
-
-                  // Save to Firestore
-                  FirebaseFirestore.instance
-                      .collection('consultationRequests')
-                      .add({
-                    'studentID': userId,
-                    'facultyID': faculty.id,
-                    'requestTitle': requestTitle,
-                    'requestDescription': requestDescription,
-                    'proposedTimeStart': proposedStartTime,
-                    'proposedTimeEnd': proposedEndTime,
-                    'status': 'Pending',
-                    'statusUpdateDate': Timestamp.now(),
-                    'createdAt': FieldValue.serverTimestamp()
-                  }).then((value) {
-                    _sendEmail(faculty.id, proposedStartTime, proposedEndTime);
-                    resetControllers();
-                    print("Consultation Request Added");
-                  }).catchError((error) {
-                    print("Failed to add consultation request: $error");
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ],
-        );
+        ]);
       },
     );
   }
@@ -306,9 +327,10 @@ class _FacState extends State<Fac> {
                     child: Card(
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        side: BorderSide(color: const Color.fromARGB(255, 220, 220, 220), width: 1)
-                      ),
+                          borderRadius: BorderRadius.circular(4),
+                          side: BorderSide(
+                              color: const Color.fromARGB(255, 220, 220, 220),
+                              width: 1)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -317,8 +339,8 @@ class _FacState extends State<Fac> {
                               topLeft: Radius.circular(4),
                               topRight: Radius.circular(4),
                             ),
-                            child: Image.network(
-                              'https://via.placeholder.com/150',
+                            child: Image.asset(
+                              'lib/assets/images/avatar.jpg',
                               width: double.infinity,
                               height: 270,
                               fit: BoxFit.cover,
