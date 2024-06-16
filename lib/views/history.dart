@@ -23,8 +23,10 @@ class _HistoryState extends State<History> {
   Future<List<ConsultationRequest>> fetchAllConsultations() async {
     User? currentUser = auth.currentUser;
     String? userId = currentUser?.uid;
-    QuerySnapshot querySnapshot =
-        await consultationRequests.where('studentID', isEqualTo: userId).get();
+    QuerySnapshot querySnapshot = await consultationRequests
+        .where('studentID', isEqualTo: userId)
+        .orderBy('createdAt', descending: true)
+        .get();
     final allConsultationRequests = querySnapshot.docs
         .map((doc) => ConsultationRequest.fromMap(
             doc.data() as Map<String, dynamic>, doc.id))
